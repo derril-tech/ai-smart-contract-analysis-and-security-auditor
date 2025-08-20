@@ -3,6 +3,694 @@
 ## 🎯 Mission Statement
 You are tasked with completing the **remaining 20%** of the ChainGuard AI Smart Contract Analysis & Security Auditor. The infrastructure is **80% complete** and production-ready. Your focus should be on implementing the specific business logic, AI/ML integrations, and frontend components.
 
+## 📋 Project Overview
+
+### **Purpose & Goals**
+ChainGuard AI is a **professional-grade smart contract security auditing platform** that combines AI/ML with traditional security tools to provide comprehensive vulnerability analysis. The platform targets **security auditors, development teams, and DeFi protocols** who need enterprise-level security analysis with evidence-based findings and professional reporting.
+
+### **Tech Stack**
+- **Backend**: FastAPI + Python 3.11 + PostgreSQL + Redis + Celery
+- **Frontend**: Next.js 14 + React 18 + TypeScript + Tailwind CSS + shadcn/ui
+- **AI/ML**: LangGraph + OpenAI/Anthropic + pgvector + RAG
+- **Security Tools**: Slither + Mythril + Echidna + Foundry (containerized)
+- **Infrastructure**: Docker + Nginx + Prometheus + Grafana
+
+### **Target Users**
+- **Security Auditors**: Professional audit firms and independent auditors
+- **Development Teams**: Smart contract developers and DevOps engineers
+- **DeFi Protocols**: Teams requiring continuous security monitoring
+- **Compliance Officers**: Organizations needing audit trail and reporting
+
+## 📁 Folder & File Structure
+
+### **Root Directory Structure**
+```
+chainguard-ai/
+├── 📁 backend/                 # FastAPI backend application
+│   ├── 📁 app/                # Main application code
+│   │   ├── 📁 api/v1/         # API routes (✅ COMPLETE - DO NOT MODIFY)
+│   │   ├── 📁 core/           # Core configuration (✅ COMPLETE - DO NOT MODIFY)
+│   │   ├── 📁 models/         # Database models (✅ COMPLETE - DO NOT MODIFY)
+│   │   ├── 📁 schemas/        # Pydantic schemas (✅ COMPLETE - DO NOT MODIFY)
+│   │   ├── 📁 services/       # Business logic (🔄 IMPLEMENT THESE)
+│   │   └── 📁 tasks/          # Background tasks (🔄 IMPLEMENT THESE)
+│   ├── 📁 alembic/            # Database migrations
+│   ├── 📄 requirements.txt    # Python dependencies
+│   ├── 📄 Dockerfile          # Development container
+│   └── 📄 Dockerfile.prod     # Production container
+├── 📁 frontend/               # Next.js frontend application
+│   ├── 📁 app/                # Next.js app directory
+│   ├── 📁 components/         # React components (🔄 IMPLEMENT THESE)
+│   ├── 📁 hooks/              # Custom React hooks (🔄 IMPLEMENT THESE)
+│   ├── 📁 lib/                # Utility libraries
+│   ├── 📁 store/              # Zustand state management (🔄 IMPLEMENT THESE)
+│   ├── 📁 types/              # TypeScript definitions (✅ COMPLETE - DO NOT MODIFY)
+│   └── 📄 package.json        # Node.js dependencies
+├── 📁 ai/                     # AI/ML modules (🔄 IMPLEMENT THESE)
+│   ├── 📁 langgraph/          # LangGraph orchestration
+│   ├── 📁 rag/                # RAG implementation
+│   └── 📁 security_tools/     # Security tool integrations
+├── 📁 monitoring/             # Prometheus/Grafana configs
+├── 📁 nginx/                  # Nginx configuration
+├── 📄 docker-compose.yml      # Development environment
+├── 📄 docker-compose.prod.yml # Production environment
+└── 📄 README.md               # Project documentation
+```
+
+### **File Categories**
+
+#### **✅ Core Logic (DO NOT MODIFY)**
+- `backend/app/models/*.py` - Database models and relationships
+- `backend/app/schemas/*.py` - Pydantic request/response schemas
+- `backend/app/api/v1/*.py` - API route definitions
+- `backend/app/core/*.py` - Configuration, database, security utilities
+- `frontend/types/index.ts` - TypeScript type definitions
+- `frontend/app/globals.css` - Global styles and theme
+
+#### **🔄 Business Logic (IMPLEMENT THESE)**
+- `backend/app/services/*.py` - Business logic services
+- `backend/app/tasks/*.py` - Background task implementations
+- `ai/langgraph/graphs/*.py` - LangGraph workflow definitions
+- `ai/security_tools/*/integration.py` - Security tool integrations
+- `ai/rag/*.py` - RAG implementation
+
+#### **🔄 UI Components (IMPLEMENT THESE)**
+- `frontend/components/*.tsx` - React components
+- `frontend/hooks/*.ts` - Custom React hooks
+- `frontend/store/*.ts` - Zustand state management
+- `frontend/lib/api.ts` - API client implementation
+
+#### **📋 Configuration (DO NOT MODIFY)**
+- `docker-compose*.yml` - Container orchestration
+- `alembic.ini` - Database migration config
+- `nginx/nginx.conf` - Web server configuration
+- `monitoring/prometheus.yml` - Metrics collection
+
+#### **📄 Documentation (REFERENCE ONLY)**
+- `README.md` - Project overview
+- `API_SPEC.md` - API documentation
+- `REPO_MAP.md` - Repository structure
+- `CLAUDE.md` - This implementation guide
+
+### **"Do Not Touch" Files**
+- All files in `backend/app/models/` - Database models are complete
+- All files in `backend/app/schemas/` - API schemas are complete
+- All files in `backend/app/api/v1/` - API routes are complete
+- All files in `backend/app/core/` - Core utilities are complete
+- `frontend/types/index.ts` - TypeScript definitions are complete
+- `frontend/app/globals.css` - Global styles are complete
+- All Docker and configuration files
+
+## 📝 Coding Conventions
+
+### **Languages & Frameworks**
+- **Backend**: Python 3.11 with FastAPI, SQLAlchemy, Pydantic
+- **Frontend**: TypeScript with React 18, Next.js 14
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **Database**: PostgreSQL with pgvector extension
+
+### **Style Guides**
+- **Python**: PEP 8 with Black formatter (line length: 88)
+- **TypeScript**: ESLint with Airbnb config + Prettier
+- **SQL**: PostgreSQL conventions with snake_case
+- **CSS**: Tailwind utility-first approach
+
+### **Naming Conventions**
+
+#### **Python (Backend)**
+```python
+# Files: snake_case
+analysis_service.py
+security_tools.py
+
+# Classes: PascalCase
+class AnalysisService:
+class SecurityToolIntegration:
+
+# Functions: snake_case
+def run_security_analysis():
+def parse_slither_output():
+
+# Variables: snake_case
+analysis_run = AnalysisRun()
+finding_data = parse_findings()
+
+# Constants: UPPER_SNAKE_CASE
+MAX_EXECUTION_TIME = 3600
+DEFAULT_TIMEOUT = 300
+```
+
+#### **TypeScript (Frontend)**
+```typescript
+// Files: PascalCase for components, camelCase for utilities
+Dashboard.tsx
+useWebSocket.ts
+
+// Components: PascalCase
+export const AnalysisRun: React.FC<AnalysisRunProps> = () => {
+export function ProjectList() {
+
+// Hooks: camelCase with 'use' prefix
+export const useWebSocket = () => {
+export const useAnalysis = () => {
+
+// Variables: camelCase
+const analysisRun = useAnalysis();
+const projectList = useProjects();
+
+// Constants: UPPER_SNAKE_CASE
+const MAX_RETRY_ATTEMPTS = 3;
+const DEFAULT_TIMEOUT = 5000;
+```
+
+#### **Database**
+```sql
+-- Tables: snake_case
+analysis_runs
+security_findings
+project_artifacts
+
+-- Columns: snake_case
+created_at
+updated_at
+is_active
+
+-- Indexes: idx_tablename_columnname
+idx_analysis_runs_status
+idx_findings_severity
+```
+
+### **Commenting Standards**
+
+#### **Python Docstrings**
+```python
+def run_security_analysis(
+    project_id: str,
+    analysis_profile: AnalysisProfile
+) -> AnalysisRun:
+    """
+    Execute comprehensive security analysis on a smart contract project.
+    
+    Args:
+        project_id: UUID of the project to analyze
+        analysis_profile: Analysis configuration (quick/standard/comprehensive)
+        
+    Returns:
+        AnalysisRun: The created analysis run with initial status
+        
+    Raises:
+        ProjectNotFoundError: If project doesn't exist
+        AnalysisConfigError: If profile configuration is invalid
+        
+    Example:
+        >>> run = run_security_analysis("123e4567", AnalysisProfile.STANDARD)
+        >>> print(run.status)
+        'pending'
+    """
+```
+
+#### **TypeScript Comments**
+```typescript
+/**
+ * Custom hook for managing WebSocket connections to analysis runs
+ * 
+ * @param runId - The analysis run ID to connect to
+ * @param onMessage - Callback for incoming messages
+ * @returns WebSocket connection state and controls
+ * 
+ * @example
+ * ```tsx
+ * const { isConnected, sendMessage } = useWebSocket(runId, handleMessage);
+ * ```
+ */
+export const useWebSocket = (
+  runId: string,
+  onMessage: (message: WebSocketMessage) => void
+): WebSocketState => {
+```
+
+### **Import Organization**
+
+#### **Python Imports**
+```python
+# Standard library imports
+import asyncio
+from datetime import datetime
+from typing import List, Optional
+
+# Third-party imports
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+import structlog
+
+# Local imports
+from app.core.database import get_db
+from app.models.project import Project, AnalysisRun
+from app.schemas.project import AnalysisRunCreate, AnalysisRunResponse
+```
+
+#### **TypeScript Imports**
+```typescript
+// React and Next.js
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
+// Third-party libraries
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
+
+// Local components and utilities
+import { Button } from '@/components/ui/button';
+import { useAnalysis } from '@/hooks/use-analysis';
+import { AnalysisRun } from '@/types';
+```
+
+## 🛠️ Workflow & Tools
+
+### **Local Development Setup**
+
+#### **Prerequisites**
+```bash
+# Required software
+- Docker & Docker Compose
+- Node.js 18+ and npm
+- Python 3.11+ and pip
+- Git
+
+# Optional but recommended
+- VS Code with extensions:
+  - Python
+  - TypeScript and JavaScript
+  - Tailwind CSS IntelliSense
+  - Docker
+  - GitLens
+```
+
+#### **Quick Start**
+```bash
+# 1. Clone and setup
+git clone <repository>
+cd chainguard-ai
+
+# 2. Start infrastructure
+docker-compose up -d postgres redis
+
+# 3. Setup backend
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+alembic upgrade head
+
+# 4. Setup frontend
+cd ../frontend
+npm install
+npm run dev
+
+# 5. Start backend
+cd ../backend
+uvicorn app.main:app --reload --port 8000
+```
+
+#### **Development Workflow**
+```bash
+# Backend development
+cd backend
+# Edit Python files
+# Run tests: python -m pytest
+# Check formatting: black .
+# Check linting: flake8
+
+# Frontend development
+cd frontend
+# Edit TypeScript/React files
+# Run tests: npm run test
+# Check formatting: npm run format
+# Check linting: npm run lint
+```
+
+### **Backend/Frontend Boundaries**
+
+#### **Backend Responsibilities**
+- **API Endpoints**: RESTful API with OpenAPI documentation
+- **Database Operations**: CRUD operations with SQLAlchemy
+- **Business Logic**: Analysis orchestration, security tool integration
+- **Background Tasks**: Celery workers for long-running operations
+- **Authentication**: JWT-based auth with RBAC
+- **File Processing**: Upload handling, artifact management
+
+#### **Frontend Responsibilities**
+- **User Interface**: React components with TypeScript
+- **State Management**: Zustand stores + React Query
+- **Real-time Updates**: WebSocket connections
+- **Code Display**: Monaco Editor integration
+- **Reporting**: PDF/HTML report viewing
+- **Search**: Semantic search interface
+
+#### **Shared Responsibilities**
+- **Type Safety**: Pydantic schemas ↔ TypeScript interfaces
+- **Validation**: Backend validation + frontend form validation
+- **Error Handling**: Consistent error responses and UI feedback
+
+### **CI/CD Considerations**
+
+#### **Development Workflow**
+```bash
+# Feature branch workflow
+git checkout -b feature/analysis-orchestration
+# Make changes
+git add .
+git commit -m "feat: implement LangGraph analysis orchestration"
+git push origin feature/analysis-orchestration
+# Create PR for review
+```
+
+#### **Testing Strategy**
+```bash
+# Backend testing
+cd backend
+python -m pytest tests/ -v --cov=app --cov-report=html
+
+# Frontend testing
+cd frontend
+npm run test:coverage
+npm run test:e2e  # End-to-end tests
+
+# Integration testing
+docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+```
+
+#### **Deployment Pipeline**
+```bash
+# Staging deployment
+docker-compose -f docker-compose.staging.yml up -d
+
+# Production deployment
+docker-compose -f docker-compose.prod.yml up -d
+
+# Health checks
+curl http://localhost:8000/health
+curl http://localhost:3000/api/health
+```
+
+## 📋 Examples
+
+### **✅ Good Answer Example**
+
+#### **Implementing a Service Class**
+```python
+"""
+✅ GOOD: Well-structured service with proper error handling, logging, and type safety
+"""
+
+import structlog
+from typing import List, Optional
+from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import HTTPException, status
+
+from app.models.project import AnalysisRun, Project
+from app.schemas.project import AnalysisRunCreate, AnalysisRunResponse
+from app.core.logging import log_analysis_event
+
+logger = structlog.get_logger(__name__)
+
+class AnalysisService:
+    """Service for managing smart contract analysis operations."""
+    
+    def __init__(self, db_session: AsyncSession):
+        self.db = db_session
+    
+    async def create_analysis_run(
+        self, 
+        project_id: str, 
+        analysis_data: AnalysisRunCreate
+    ) -> AnalysisRunResponse:
+        """
+        Create a new analysis run for a project.
+        
+        Args:
+            project_id: UUID of the project
+            analysis_data: Analysis configuration
+            
+        Returns:
+            AnalysisRunResponse: Created analysis run
+            
+        Raises:
+            HTTPException: If project not found or invalid configuration
+        """
+        try:
+            # Validate project exists
+            project = await self._get_project(project_id)
+            if not project:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Project {project_id} not found"
+                )
+            
+            # Create analysis run
+            analysis_run = AnalysisRun(
+                project_id=project_id,
+                profile=analysis_data.profile,
+                settings=analysis_data.settings,
+                description=analysis_data.description,
+                tags=analysis_data.tags
+            )
+            
+            self.db.add(analysis_run)
+            await self.db.commit()
+            await self.db.refresh(analysis_run)
+            
+            # Log the event
+            log_analysis_event(
+                event_type="analysis_run_created",
+                run_id=str(analysis_run.id),
+                project_id=project_id,
+                details={"profile": analysis_data.profile}
+            )
+            
+            logger.info(
+                "Analysis run created successfully",
+                run_id=str(analysis_run.id),
+                project_id=project_id,
+                profile=analysis_data.profile
+            )
+            
+            return AnalysisRunResponse.from_orm(analysis_run)
+            
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(
+                "Failed to create analysis run",
+                project_id=project_id,
+                error=str(e)
+            )
+            await self.db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to create analysis run"
+            )
+    
+    async def _get_project(self, project_id: str) -> Optional[Project]:
+        """Get project by ID."""
+        result = await self.db.execute(
+            "SELECT * FROM projects WHERE id = :project_id AND is_active = true",
+            {"project_id": project_id}
+        )
+        return result.fetchone()
+```
+
+#### **Implementing a React Component**
+```typescript
+/**
+ * ✅ GOOD: Well-structured React component with proper TypeScript, error handling, and accessibility
+ */
+
+import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useAnalysis } from '@/hooks/use-analysis';
+import { AnalysisRun, RunStatus } from '@/types';
+
+interface AnalysisRunCardProps {
+  runId: string;
+  onStatusChange?: (status: RunStatus) => void;
+}
+
+export const AnalysisRunCard: React.FC<AnalysisRunCardProps> = ({
+  runId,
+  onStatusChange
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // Use custom hook for data fetching
+  const { data: analysisRun, isLoading, error } = useAnalysis(runId);
+  
+  // Handle status changes
+  useEffect(() => {
+    if (analysisRun?.status && onStatusChange) {
+      onStatusChange(analysisRun.status);
+    }
+  }, [analysisRun?.status, onStatusChange]);
+  
+  // Handle errors
+  useEffect(() => {
+    if (error) {
+      toast.error('Failed to load analysis run details');
+    }
+  }, [error]);
+  
+  if (isLoading) {
+    return <AnalysisRunCardSkeleton />;
+  }
+  
+  if (error || !analysisRun) {
+    return (
+      <Card className="border-red-200 bg-red-50">
+        <CardContent className="p-4">
+          <p className="text-red-600">Failed to load analysis run</p>
+        </CardContent>
+      </Card>
+    );
+  }
+  
+  return (
+    <Card className="transition-all hover:shadow-md">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg font-semibold">
+            Analysis Run #{analysisRun.id.slice(0, 8)}
+          </CardTitle>
+          <StatusBadge status={analysisRun.status} />
+        </div>
+      </CardHeader>
+      
+      <CardContent className="space-y-3">
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span className="font-medium text-gray-600">Profile:</span>
+            <span className="ml-2 capitalize">{analysisRun.profile}</span>
+          </div>
+          <div>
+            <span className="font-medium text-gray-600">Progress:</span>
+            <span className="ml-2">{Math.round(analysisRun.progress * 100)}%</span>
+          </div>
+        </div>
+        
+        {analysisRun.description && (
+          <p className="text-sm text-gray-600">{analysisRun.description}</p>
+        )}
+        
+        <div className="flex justify-between items-center">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-expanded={isExpanded}
+          >
+            {isExpanded ? 'Show Less' : 'Show Details'}
+          </Button>
+          
+          <span className="text-xs text-gray-500">
+            Created {new Date(analysisRun.created_at).toLocaleDateString()}
+          </span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const StatusBadge: React.FC<{ status: RunStatus }> = ({ status }) => {
+  const statusConfig = {
+    pending: { color: 'bg-yellow-100 text-yellow-800', label: 'Pending' },
+    running: { color: 'bg-blue-100 text-blue-800', label: 'Running' },
+    completed: { color: 'bg-green-100 text-green-800', label: 'Completed' },
+    failed: { color: 'bg-red-100 text-red-800', label: 'Failed' }
+  };
+  
+  const config = statusConfig[status] || statusConfig.pending;
+  
+  return (
+    <Badge className={config.color}>
+      {config.label}
+    </Badge>
+  );
+};
+
+const AnalysisRunCardSkeleton: React.FC = () => (
+  <Card>
+    <CardHeader className="pb-3">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-6 w-20" />
+      </div>
+    </CardHeader>
+    <CardContent className="space-y-3">
+      <div className="grid grid-cols-2 gap-4">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-16" />
+      </div>
+      <Skeleton className="h-4 w-full" />
+      <div className="flex justify-between">
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="h-4 w-20" />
+      </div>
+    </CardContent>
+  </Card>
+);
+```
+
+### **❌ Bad Answer Example**
+
+#### **Poor Service Implementation**
+```python
+"""
+❌ BAD: No error handling, no logging, no type hints, poor structure
+"""
+
+def create_run(project_id, data):
+    # No validation
+    run = AnalysisRun()
+    run.project_id = project_id
+    run.profile = data.profile
+    # No error handling
+    db.add(run)
+    db.commit()
+    return run
+```
+
+#### **Poor React Component**
+```typescript
+/**
+ * ❌ BAD: No TypeScript, no error handling, no loading states, poor accessibility
+ */
+
+const AnalysisCard = ({ runId }) => {
+  const [data, setData] = useState(null);
+  
+  useEffect(() => {
+    fetch(`/api/runs/${runId}`)
+      .then(res => res.json())
+      .then(setData);
+  }, [runId]);
+  
+  return (
+    <div>
+      <h3>Run {data?.id}</h3>
+      <p>Status: {data?.status}</p>
+      <button onClick={() => console.log('clicked')}>
+        View Details
+      </button>
+    </div>
+  );
+};
+```
+
 ## 📋 Implementation Status
 
 ### **✅ Completed (80%) - DO NOT MODIFY**

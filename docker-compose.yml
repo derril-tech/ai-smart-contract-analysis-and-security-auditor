@@ -1,0 +1,214 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database with pgvector
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: chainguard-postgres
+    environment:
+      POSTGRES_DB: chainguard
+      POSTGRES_USER: chainguard
+      POSTGRES_PASSWORD: chainguard_dev_password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chainguard -d chainguard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - chainguard-network
+
+  # Redis for caching and queues
+  redis:
+    image: redis:7-alpine
+    container_name: chainguard-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass chainguard_redis_password
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - chainguard-network
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chainguard-backend
+    environment:
+      - DATABASE_URL=postgresql://chainguard:chainguard_dev_password@postgres:5432/chainguard
+      - REDIS_URL=redis://:chainguard_redis_password@redis:6379/0
+      - SECRET_KEY=chainguard_dev_secret_key_change_in_production
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - chainguard-network
+    restart: unless-stopped
+
+  # Celery Worker for background tasks
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chainguard-celery-worker
+    environment:
+      - DATABASE_URL=postgresql://chainguard:chainguard_dev_password@postgres:5432/chainguard
+      - REDIS_URL=redis://:chainguard_redis_password@redis:6379/0
+      - SECRET_KEY=chainguard_dev_secret_key_change_in_production
+      - ENVIRONMENT=development
+    volumes:
+      - ./backend:/app
+      - ./uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - chainguard-network
+    command: celery -A app.core.celery worker --loglevel=info
+    restart: unless-stopped
+
+  # Celery Beat for scheduled tasks
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chainguard-celery-beat
+    environment:
+      - DATABASE_URL=postgresql://chainguard:chainguard_dev_password@postgres:5432/chainguard
+      - REDIS_URL=redis://:chainguard_redis_password@redis:6379/0
+      - SECRET_KEY=chainguard_dev_secret_key_change_in_production
+      - ENVIRONMENT=development
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - chainguard-network
+    command: celery -A app.core.celery beat --loglevel=info
+    restart: unless-stopped
+
+  # Security Tools Containers
+  slither:
+    build:
+      context: ./ai/security_tools/slither
+      dockerfile: Dockerfile
+    container_name: chainguard-slither
+    environment:
+      - MAX_EXECUTION_TIME=300
+      - MAX_MEMORY=512m
+    volumes:
+      - ./uploads:/workspace
+    networks:
+      - chainguard-network
+    profiles:
+      - security-tools
+
+  mythril:
+    build:
+      context: ./ai/security_tools/mythril
+      dockerfile: Dockerfile
+    container_name: chainguard-mythril
+    environment:
+      - MAX_EXECUTION_TIME=600
+      - MAX_MEMORY=1g
+    volumes:
+      - ./uploads:/workspace
+    networks:
+      - chainguard-network
+    profiles:
+      - security-tools
+
+  echidna:
+    build:
+      context: ./ai/security_tools/echidna
+      dockerfile: Dockerfile
+    container_name: chainguard-echidna
+    environment:
+      - MAX_EXECUTION_TIME=1800
+      - MAX_MEMORY=2g
+    volumes:
+      - ./uploads:/workspace
+    networks:
+      - chainguard-network
+    profiles:
+      - security-tools
+
+  foundry:
+    build:
+      context: ./ai/security_tools/foundry
+      dockerfile: Dockerfile
+    container_name: chainguard-foundry
+    environment:
+      - MAX_EXECUTION_TIME=900
+      - MAX_MEMORY=1g
+    volumes:
+      - ./uploads:/workspace
+    networks:
+      - chainguard-network
+    profiles:
+      - security-tools
+
+  # Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: chainguard-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - chainguard-network
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: chainguard-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=chainguard_grafana_password
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - chainguard-network
+    profiles:
+      - monitoring
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  chainguard-network:
+    driver: bridge
