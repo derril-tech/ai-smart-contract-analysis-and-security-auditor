@@ -1,0 +1,277 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap');
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Security-specific component styles */
+  .security-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .security-badge.critical {
+    @apply bg-security-critical-bg text-security-critical border border-security-critical-border;
+  }
+
+  .security-badge.high {
+    @apply bg-security-high-bg text-security-high border border-security-high-border;
+  }
+
+  .security-badge.medium {
+    @apply bg-security-medium-bg text-security-medium border border-security-medium-border;
+  }
+
+  .security-badge.low {
+    @apply bg-security-low-bg text-security-low border border-security-low-border;
+  }
+
+  .security-badge.info {
+    @apply bg-security-info-bg text-security-info border border-security-info-border;
+  }
+
+  /* Code editor styles */
+  .monaco-editor {
+    @apply rounded-lg border border-border;
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground)) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground));
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--foreground));
+  }
+
+  /* Loading animations */
+  .loading-dots {
+    @apply inline-flex space-x-1;
+  }
+
+  .loading-dots > div {
+    @apply w-2 h-2 bg-current rounded-full animate-pulse;
+    animation-delay: calc(var(--i) * 0.2s);
+  }
+
+  /* Security scan animation */
+  .security-scan {
+    @apply relative overflow-hidden;
+  }
+
+  .security-scan::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent;
+    animation: scan-line 3s linear infinite;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  .dark .glass {
+    @apply bg-black/10 border-white/10;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    @apply bg-gradient-to-r from-chainguard-primary to-chainguard-secondary;
+  }
+
+  .gradient-accent {
+    @apply bg-gradient-to-r from-chainguard-accent to-blue-600;
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  /* Button variants */
+  .btn-primary {
+    @apply bg-chainguard-primary text-white hover:bg-chainguard-dark-primary transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-chainguard-secondary text-white hover:bg-chainguard-dark-secondary transition-colors;
+  }
+
+  .btn-accent {
+    @apply bg-chainguard-accent text-white hover:bg-chainguard-dark-accent transition-colors;
+  }
+
+  /* Status indicators */
+  .status-indicator {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-indicator.success {
+    @apply bg-chainguard-success;
+  }
+
+  .status-indicator.warning {
+    @apply bg-chainguard-warning;
+  }
+
+  .status-indicator.error {
+    @apply bg-chainguard-error;
+  }
+
+  .status-indicator.info {
+    @apply bg-chainguard-accent;
+  }
+
+  /* Typography enhancements */
+  .text-gradient {
+    @apply bg-gradient-to-r from-chainguard-primary to-chainguard-accent bg-clip-text text-transparent;
+  }
+
+  .heading-xl {
+    @apply text-4xl font-bold tracking-tight;
+  }
+
+  .heading-lg {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+
+  .heading-md {
+    @apply text-xl font-semibold tracking-tight;
+  }
+
+  .body-lg {
+    @apply text-lg leading-relaxed;
+  }
+
+  .body-md {
+    @apply text-base leading-relaxed;
+  }
+
+  .body-sm {
+    @apply text-sm leading-relaxed;
+  }
+
+  .caption {
+    @apply text-xs text-muted-foreground;
+  }
+
+  /* Layout utilities */
+  .container-narrow {
+    @apply max-w-4xl mx-auto px-4;
+  }
+
+  .container-wide {
+    @apply max-w-7xl mx-auto px-4;
+  }
+
+  /* Focus styles */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-chainguard-accent focus:ring-offset-2;
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+}
+
+@layer utilities {
+  /* Custom utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
